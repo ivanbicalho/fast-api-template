@@ -1,18 +1,14 @@
-from typing import Any
+from typing import Mapping
 from fastapi.responses import JSONResponse
 
 
 class ApiResponse:
     @staticmethod
-    def _json(message: str | None, status: int) -> JSONResponse:
-        return JSONResponse(content={"message": message}, status_code=status)
+    def _json(message: str, status: int, headers: Mapping[str, str] = None) -> JSONResponse:
+        return JSONResponse(content={"message": message}, status_code=status, headers=headers)
 
     @staticmethod
-    def ok(content: Any) -> JSONResponse:
-        return JSONResponse(content=content)
-
-    @staticmethod
-    def ok_with_message(message: str) -> JSONResponse:
+    def ok(message: str) -> JSONResponse:
         return ApiResponse._json(message, 200)
 
     @staticmethod
@@ -20,8 +16,8 @@ class ApiResponse:
         return ApiResponse._json(message, 400)
 
     @staticmethod
-    def error(message: str) -> JSONResponse:
-        return ApiResponse._json(message, 500)
+    def error(message: str, headers) -> JSONResponse:
+        return ApiResponse._json(message, 500, headers=headers)
 
     @staticmethod
     def not_found(message: str | None = None) -> JSONResponse:

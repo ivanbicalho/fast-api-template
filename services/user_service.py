@@ -24,6 +24,7 @@ class UserService:
         )
 
         self.uow.session.add(user_model)
+        self.uow.session.flush()
         return User.from_model(user_model)
 
     def update(self, update_user_request: UpdateUserRequest) -> User:
@@ -36,4 +37,5 @@ class UserService:
         user_model.email = update_user_request.email
 
         self.uow.session.add(user_model)
+        self.uow.session.flush()
         return User.from_model(user_model)

@@ -28,8 +28,36 @@ update-requirements:
 
 # SQL
 
+# set -a = Marks all variables which are modified or created for export to the environment of subsequent commands
+# source local.env = Loads the environment variables from the local.env file
+# set +a = Turns off the export of variables
+# export PYTHONPATH=$(shell pwd) = Sets the PYTHONPATH variable to the current directory
+# cd ./db = Changes the directory to the db directory
+# alembic revision --autogenerate = Generates a new migration
 migrations:
-	@docker compose run --build make-migrations
+	@set -a && \
+	source local.env && \
+	set +a && \
+	export PYTHONPATH=$(shell pwd) && \
+	cd ./db && \
+	alembic revision --autogenerate
 
 migrate:
-	@docker compose run --build migrate
+	@set -a && \
+	source local.env && \
+	set +a && \
+	export PYTHONPATH=$(shell pwd) && \
+	cd ./db && \
+	alembic upgrade head
+
+# migrations:
+# 	@set -a && \
+# 	source local.env && \
+# 	set +a && \
+# 	export PYTHONPATH=$(shell pwd) && \
+# 	cd ./db && \
+# 	alembic revision --autogenerate
+
+# migrate:
+# 	@docker compose run --build migrate
+

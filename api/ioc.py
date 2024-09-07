@@ -4,7 +4,7 @@ from services.user_service import UserService
 from db.uow import UnitOfWork
 
 
-class Factory:
+class IoC:
     @staticmethod
     def user_service(uow: UnitOfWork = Depends(UnitOfWork.new)) -> UserService:
         return UserService(uow)

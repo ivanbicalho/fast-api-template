@@ -17,15 +17,15 @@ services:
       - "3000:3000"
     depends_on:
       - db
-    environment: &db_envs
-      DATABASE_URL: "postgresql://myuser:mypassword@host.docker.internal:5432/arch-db"
+    env_file:
+      - local.env
 
   make-migrations:
     build:
       context: .
       dockerfile: Dockerfile
-    environment:
-      <<: *db_envs
+    env_file:
+      - local.env
     command: sh -c "
       export PYTHONPATH=$(pwd) && \
       cd /app/db && \
@@ -35,8 +35,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    environment:
-      <<: *db_envs
+    env_file:
+      - local.env
     command: sh -c "
       export PYTHONPATH=$(pwd) && \
       cd /app/db && \

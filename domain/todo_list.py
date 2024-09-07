@@ -1,5 +1,5 @@
 from __future__ import annotations
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import datetime
 from enum import Enum
 
@@ -18,6 +18,7 @@ class TodoList:
     status: TodoStatus
     created: datetime.datetime
     updated: datetime.datetime
+    items: list[TodoItem] = field(default_factory=list)
 
     @staticmethod
     def from_model(model: TodoListModel) -> TodoList:
@@ -27,6 +28,7 @@ class TodoList:
             status=TodoStatus(model.status),
             created=model.created,
             updated=model.updated,
+            items=[TodoItem.from_model(item) for item in model.items],
         )
 
 

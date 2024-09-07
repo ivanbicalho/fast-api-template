@@ -1,7 +1,9 @@
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
-from routes import users_route
 import logging
+
+from api.responses import ApiResponse
+from api.routes import users_route
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +28,7 @@ app = FastAPI(
 async def custom_http_exception_handler(request, exc) -> JSONResponse:
     logger.exception("Unhandled error", exc_info=exc)
     headers = getattr(exc, "headers", None)
-    return JSONResponse({"detail": "Internal server error"}, status_code=500, headers=headers)
+    return ApiResponse.error("Internal server error", headers)
 
 
 # app.add_middleware(
