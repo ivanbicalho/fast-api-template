@@ -1,0 +1,46 @@
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: arch-db
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+    ports:
+      - "5432:5432"
+    volumes:
+      - arch-db-data:/var/lib/postgresql/data
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    environment: &db_envs
+      DATABASE_URL: "postgresql://myuser:mypassword@host.docker.internal:5432/arch-db"
+
+  make-migrations:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      <<: *db_envs
+    command: sh -c "
+      export PYTHONPATH=$(pwd) && \
+      cd /app/db && \
+      alembic revision --autogenerate"
+
+  migrate:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      <<: *db_envs
+    command: sh -c "
+      export PYTHONPATH=$(pwd) && \
+      cd /app/db && \
+      alembic upgrade head"
+
+volumes:
+  arch-db-data:

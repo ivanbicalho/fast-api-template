@@ -1,0 +1,6 @@
+-r release.txt
+
+black==24.8.0
+ruff==0.6.4
+mypy==1.11.2
+pur==7.3.2
