@@ -3,5 +3,6 @@ from dataclasses import dataclass
 
 @dataclass
 class AddUserRequest:
-    name: str
+    first_name: str
+    last_name: str
     email: str

@@ -4,7 +4,7 @@ from fastapi.responses import JSONResponse
 
 class ApiResponse:
     @staticmethod
-    def _json(message: str, status: int, headers: Mapping[str, str] = None) -> JSONResponse:
+    def _json(message: str, status: int, headers: Mapping[str, str] | None = None) -> JSONResponse:
         return JSONResponse(content={"message": message}, status_code=status, headers=headers)
 
     @staticmethod

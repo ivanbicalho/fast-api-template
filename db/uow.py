@@ -17,8 +17,3 @@ class UnitOfWork:
         else:
             self.session.commit()
         self.session.close()
-
-    @staticmethod
-    def new() -> Generator[UnitOfWork, Any, None]:
-        with UnitOfWork() as uow:
-            yield uow

@@ -1,19 +1,24 @@
 from __future__ import annotations
-from dataclasses import dataclass
 
 from db.models import UserModel
 
 
-@dataclass
-class User:
-    id: int
-    name: str
-    email: str
+class User(UserModel):
+    @property
+    def full_name(self) -> str:
+        return f"{self.first_name} {self.last_name}"
 
-    @staticmethod
-    def from_model(model: UserModel) -> User:
-        return User(
-            id=model.id,
-            name=model.name,
-            email=model.email,
-        )
+
+# @dataclass
+# class User:
+#     id: int
+#     name: str
+#     email: str
+
+#     @staticmethod
+#     def from_model(model: UserModel) -> User:
+#         return User(
+#             id=model.id,
+#             name=model.name,
+#             email=model.email,
+#         )

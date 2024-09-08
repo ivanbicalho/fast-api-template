@@ -15,6 +15,10 @@ def init(
     user_service: UserService = Depends(IoC.user_service),
     todo_service: TodoService = Depends(IoC.todo_service),
 ) -> UserResponse:
-    user = user_service.add(request.to_add_user_request())
-    todo_service.create_todo_list(user, request.default_list_name)
-    return UserResponse.from_user(user)
+    # user = user_service.add(request.to_add_user_request())
+    # logger.info(user.full_name)
+    
+    return UserResponse(id=1, first_name="Ivan", last_name="Bicalho", email="")
+
+    # todo_service.create_todo_list(user, request.default_list_name)
+    # return UserResponse.from_user(user)

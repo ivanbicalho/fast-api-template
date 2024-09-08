@@ -26,7 +26,8 @@ class UserModel(BaseModel):
         return f"User: ID={self.id}, Name={self.name}"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, index=True)
-    name: Mapped[str] = mapped_column(String(200))
+    first_name: Mapped[str] = mapped_column(String(200))
+    last_name: Mapped[str] = mapped_column(String(200))
     email: Mapped[str] = mapped_column(String(200))
 
 
@@ -42,7 +43,7 @@ class TodoListModel(BaseModel):
     status: Mapped[int]
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
     user: Mapped[UserModel] = relationship()
-    # items: Mapped[list[TodoItemModel]] = relationship(back_populates="list")
+    items: Mapped[list[TodoItemModel]] = relationship(back_populates="list")
 
 
 class TodoItemModel(BaseModel):
