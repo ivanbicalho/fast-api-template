@@ -1,9 +1,10 @@
 from __future__ import annotations
 from typing import Any, Generator
 from fastapi import Depends
-from services.todo_service import TodoService
-from services.user_service import UserService
+from repository.todo_repository import TodoRepository
+from repository.user_repository import UserRepository
 from db.uow import UnitOfWork
+from use_cases.add_user_use_case import AddUserUseCase
 
 
 def uow() -> Generator[UnitOfWork, Any, None]:
@@ -16,11 +17,16 @@ def uow() -> Generator[UnitOfWork, Any, None]:
         yield uow
 
 
-class IoC:
-    @staticmethod
-    def user_service(uow: UnitOfWork = Depends(uow)) -> UserService:
-        return UserService(uow)
+def user_repository(uow: UnitOfWork = Depends(uow)) -> UserRepository:
+    return UserRepository(uow)
 
-    @staticmethod
-    def todo_service(uow: UnitOfWork = Depends(uow)) -> TodoService:
-        return TodoService(uow)
+
+def todo_repository(uow: UnitOfWork = Depends(uow)) -> TodoRepository:
+    return TodoRepository(uow)
+
+
+def add_user_use_case(
+    user_repository: UserRepository = Depends(user_repository),
+    todo_repository: TodoRepository = Depends(todo_repository),
+) -> AddUserUseCase:
+    return AddUserUseCase(user_repository, todo_repository)

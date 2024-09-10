@@ -1,7 +1,7 @@
 from __future__ import annotations
 import datetime
 from pydantic import BaseModel
-from domain.todo_list import TodoStatus
+from db.models import TodoStatus
 
 
 class TodoListRequest(BaseModel):

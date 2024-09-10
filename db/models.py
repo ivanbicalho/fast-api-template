@@ -2,8 +2,11 @@ from __future__ import annotations
 import datetime
 from typing import Any
 from db.database import Base
-from sqlalchemy import ForeignKey, String
+from uuid import UUID, uuid4
+from sqlalchemy import ForeignKey, String, Enum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from db.enum import TodoStatus
 
 
 def default_updated(context) -> Any:
@@ -40,7 +43,10 @@ class TodoListModel(BaseModel):
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, index=True)
     name: Mapped[str] = mapped_column(String(200))
-    status: Mapped[int]
+    status: Mapped[TodoStatus] = mapped_column(Enum(TodoStatus), default=TodoStatus.PENDING)
+    # status: Mapped[TodoStatus] = mapped_column(
+    #     Enum(TodoStatus, native_enum=False, values_callable=lambda e: [x.value for x in e]),
+    # )
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
     user: Mapped[UserModel] = relationship()
     items: Mapped[list[TodoItemModel]] = relationship(back_populates="list")
@@ -59,4 +65,16 @@ class TodoItemModel(BaseModel):
 
     list_id: Mapped[int] = mapped_column(ForeignKey("todo_list.id"))
     list: Mapped[TodoListModel] = relationship()
-    # list_id: Mapped[int] = mapped_column(ForeignKey("todo_list.id"))
+
+
+class AuditModel(Base):
+    __tablename__ = "auditing"
+    __table_args__ = {"extend_existing": True}
+
+    def __str__(self) -> str:
+        return f"Auditing: ID={self.id}"
+
+    id: Mapped[UUID] = mapped_column(primary_key=True, index=True, default=uuid4)
+    created: Mapped[datetime.datetime] = mapped_column(default=datetime.datetime.now, index=True)
+    operation: Mapped[str] = mapped_column(String(200))
+    message: Mapped[str] = mapped_column(String(500))

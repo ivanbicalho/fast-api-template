@@ -1,5 +1,4 @@
-from domain.todo_list import TodoStatus
-from db.models import TodoListModel, TodoItemModel
+from db.models import AuditModel, TodoListModel, TodoItemModel
 from db.uow import UnitOfWork
 
 
@@ -7,59 +6,42 @@ class TodoRepository:
     def __init__(self, uow: UnitOfWork) -> None:
         self.uow = uow
 
-    def create_todo_list(self, user_id: int, list_name: str) -> TodoListModel:
-        todo_list_model = TodoListModel(
-            name=list_name,
-            status=TodoStatus.PENDING.value,
-            user_id=user_id,
-        )
-
-        self.uow.session.add(todo_list_model)
-        self.uow.session.flush()
-        return todo_list_model
-
-    def add_item_to_list(
-        self,
-        list_model: TodoListModel,
-        description: str,
-    ) -> TodoItemModel:
-        list_model.items.append(
-            TodoItemModel(
-                description=description,
-                status=TodoStatus.PENDING.value,
+    def upsert_list(self, todo_list: TodoListModel) -> TodoListModel:
+        if todo_list.id:
+            audit = AuditModel(operation="update", message=f"Updating list {todo_list.id}")
+        else:
+            audit = AuditModel(
+                operation="insert", message=f"Adding new list {todo_list.name} from user {todo_list.user_id}"
             )
-        )
-        list_model.save()
-        item = TodoItemModel(
-            list_id=list_id,
-            description=description,
-            status=TodoStatus.PENDING.value,
-        )
 
-        self.uow.session.add(item)
+        self.uow.session.add(audit)
+        self.uow.session.add(todo_list)
         self.uow.session.flush()
-        return item
+        return todo_list
 
-    def complete_item(self, item_id: int) -> TodoItemModel:
-        item = self.uow.session.query(TodoItemModel).filter(TodoItemModel.id == item_id).first()
+    def upsert_item(self, todo_item: TodoItemModel) -> TodoItemModel:
+        if todo_item.id:
+            audit = AuditModel(operation="update", message=f"Updating item {todo_item.id}")
+        else:
+            audit = AuditModel(
+                operation="insert", message=f"Adding new item '{todo_item.name}' to list {todo_item.list_id}"
+            )
 
-        if not item:
-            raise ValueError("Item not found")
-
-        if item.status == TodoStatus.COMPLETED.value:
-            return item
-
-        item.status = TodoStatus.COMPLETED.value
-        self.uow.session.add(item)
+        self.uow.session.add(audit)
+        self.uow.session.add(todo_item)
         self.uow.session.flush()
-        return item
+        return todo_item
 
-    # def update(self, user: User) -> User:
-    #     user_model = self.uow.session.query(UserModel).filter(UserModel.id == user.id).first()
+    # def complete_item(self, item_id: int) -> TodoItemModel:
+    #     item = self.uow.session.query(TodoItemModel).filter(TodoItemModel.id == item_id).first()
 
-    #     if user_model:
-    #         user_model.name = user.name
-    #         user_model.email = user.email
+    #     if not item:
+    #         raise ValueError("Item not found")
 
-    #     self.uow.session.add(user_model)
-    #     return user
+    #     if item.status == TodoStatus.COMPLETED.value:
+    #         return item
+
+    #     item.status = TodoStatus.COMPLETED.value
+    #     self.uow.session.add(item)
+    #     self.uow.session.flush()
+    #     return item

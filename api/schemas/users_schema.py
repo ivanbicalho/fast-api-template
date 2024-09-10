@@ -1,21 +1,21 @@
 from __future__ import annotations
 from pydantic import BaseModel
+from db.models import UserModel
+from use_cases.add_user_use_case import AddUserUseCaseRequest
 
-from domain.user import User
-from services.requests.add_user_request import AddUserRequest
 
-
-class InitRequest(BaseModel):
+class UserRequest(BaseModel):
     first_name: str
     last_name: str
     email: str
     default_list_name: str
 
-    def to_add_user_request(self) -> AddUserRequest:
-        return AddUserRequest(
+    def to_service_request(self) -> AddUserUseCaseRequest:
+        return AddUserUseCaseRequest(
             first_name=self.first_name,
             last_name=self.last_name,
             email=self.email,
+            default_list_name=self.default_list_name,
         )
 
     class Config:
@@ -29,21 +29,6 @@ class InitRequest(BaseModel):
         }
 
 
-class UserRequest(BaseModel):
-    first_name: str
-    last_name: str
-    email: str
-
-    class Config:
-        schema_extra = {
-            "example": {
-                "first_name": "Ivan",
-                "last_name": "Bicalho",
-                "email": "ivanribeirob@gmail.com",
-            }
-        }
-
-
 class UserResponse(BaseModel):
     id: int
     first_name: str
@@ -51,7 +36,7 @@ class UserResponse(BaseModel):
     email: str
 
     @staticmethod
-    def from_user(user: User) -> UserResponse:
+    def from_user(user: UserModel) -> UserResponse:
         return UserResponse(
             id=user.id,
             first_name=user.first_name,

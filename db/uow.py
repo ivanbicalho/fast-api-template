@@ -1,5 +1,4 @@
 from __future__ import annotations
-from typing import Any, Generator
 from db.database import default_session_factory
 
 

@@ -1,4 +1,4 @@
-from db.models import UserModel
+from db.models import AuditModel, UserModel
 from db.uow import UnitOfWork
 
 
@@ -14,21 +14,16 @@ class UserRepository:
 
         return None
 
-    def add(self, user: UserModel) -> UserModel:
+    def list_users(self) -> list[UserModel]:
+        return self.uow.session.query(UserModel).all()
+
+    def upsert(self, user: UserModel) -> UserModel:
+        if user.id:
+            audit = AuditModel(operation="update", message=f"Updating user {user.id}")
+        else:
+            audit = AuditModel(operation="insert", message=f"Adding new user {user.first_name}")
+
+        self.uow.session.add(audit)
         self.uow.session.add(user)
         self.uow.session.flush()
         return user
-
-    def update(self, user: UserModel) -> UserModel:
-        user_model = self.uow.session.query(UserModel).filter(UserModel.id == user.id).first()
-
-        if not user_model:
-            raise ValueError("User not found")
-
-        user_model.first_name = user.first_name
-        user_model.last_name = user.last_name
-        user_model.email = user.email
-
-        self.uow.session.add(user_model)
-        self.uow.session.flush()
-        return user_model
