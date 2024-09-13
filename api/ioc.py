@@ -4,7 +4,7 @@ from fastapi import Depends
 from repository.todo_repository import TodoRepository
 from repository.user_repository import UserRepository
 from db.uow import UnitOfWork
-from use_cases.add_user_use_case import AddUserUseCase
+from commands.add_user_command import AddUserCommand
 
 
 def uow() -> Generator[UnitOfWork, Any, None]:
@@ -28,5 +28,5 @@ def todo_repository(uow: UnitOfWork = Depends(uow)) -> TodoRepository:
 def add_user_use_case(
     user_repository: UserRepository = Depends(user_repository),
     todo_repository: TodoRepository = Depends(todo_repository),
-) -> AddUserUseCase:
-    return AddUserUseCase(user_repository, todo_repository)
+) -> AddUserCommand:
+    return AddUserCommand(user_repository, todo_repository)

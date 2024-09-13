@@ -4,7 +4,7 @@ from repository.user_repository import UserRepository
 from api.schemas.v1.todo_schema import TodoListRequest, TodoListResponse, TodoItemRequest, TodoItemResponse
 import logging
 import api.ioc as ioc
-from use_cases.add_user_use_case import AddUserUseCase
+from commands.add_user_command import AddUserCommand
 
 router = APIRouter(prefix="/v1/todo", tags=["ToDo"])
 logger = logging.getLogger(__name__)

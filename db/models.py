@@ -6,7 +6,7 @@ from uuid import UUID, uuid4
 from sqlalchemy import ForeignKey, String, Enum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from db.enum import TodoStatus
+from db.enum import TodoStatus, AuditOperation
 
 
 def default_updated(context) -> Any:
@@ -61,7 +61,7 @@ class TodoItemModel(BaseModel):
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, index=True)
     description: Mapped[str] = mapped_column(String(200))
-    status: Mapped[int] = mapped_column(Enum(TodoStatus), default=TodoStatus.PENDING)
+    status: Mapped[TodoStatus] = mapped_column(Enum(TodoStatus), default=TodoStatus.PENDING)
 
     list_id: Mapped[int] = mapped_column(ForeignKey("todo_list.id"))
     list: Mapped[TodoListModel] = relationship()
@@ -76,5 +76,5 @@ class AuditModel(Base):
 
     id: Mapped[UUID] = mapped_column(primary_key=True, index=True, default=uuid4)
     created: Mapped[datetime.datetime] = mapped_column(default=datetime.datetime.now, index=True)
-    operation: Mapped[str] = mapped_column(String(200))
+    operation: Mapped[AuditOperation] = mapped_column(Enum(AuditOperation))
     message: Mapped[str] = mapped_column(String(500))

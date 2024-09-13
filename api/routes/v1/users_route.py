@@ -3,7 +3,7 @@ from repository.user_repository import UserRepository
 from api.schemas.v1.users_schema import UserRequest, UserResponse
 import logging
 import api.ioc as ioc
-from use_cases.add_user_use_case import AddUserUseCase
+from commands.add_user_command import AddUserCommand
 
 router = APIRouter(prefix="/v1/users", tags=["Users"])
 logger = logging.getLogger(__name__)
@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 @router.post("", status_code=status.HTTP_200_OK, response_model=UserResponse)
 def add_user(
     request: UserRequest,
-    add_user_use_case: AddUserUseCase = Depends(ioc.add_user_use_case),
+    add_user_use_case: AddUserCommand = Depends(ioc.add_user_use_case),
 ) -> UserResponse:
     user = add_user_use_case.run(request.to_service_request())
     return UserResponse.from_user(user)

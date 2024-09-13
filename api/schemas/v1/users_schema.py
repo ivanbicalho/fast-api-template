@@ -1,7 +1,7 @@
 from __future__ import annotations
 from pydantic import BaseModel
 from db.models import UserModel
-from use_cases.add_user_use_case import AddUserUseCaseRequest
+from commands.add_user_command import AddUserUseCaseRequest
 
 
 class UserRequest(BaseModel):

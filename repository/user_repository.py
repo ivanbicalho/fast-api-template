@@ -1,4 +1,4 @@
-from db.models import AuditModel, UserModel
+from db.models import UserModel
 from db.uow import UnitOfWork
 
 
@@ -18,12 +18,12 @@ class UserRepository:
         return self.uow.session.query(UserModel).all()
 
     def upsert(self, user: UserModel) -> UserModel:
-        if user.id:
-            audit = AuditModel(operation="update", message=f"Updating user {user.id}")
-        else:
-            audit = AuditModel(operation="insert", message=f"Adding new user {user.first_name}")
+        # if user.id:
+        #     audit = AuditModel(operation="update", message=f"Updating user {user.id}")
+        # else:
+        #     audit = AuditModel(operation="insert", message=f"Adding new user {user.first_name}")
 
-        self.uow.session.add(audit)
+        # self.uow.session.add(audit)
         self.uow.session.add(user)
         self.uow.session.flush()
         return user
