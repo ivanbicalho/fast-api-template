@@ -6,6 +6,11 @@ class TodoRepository:
     def __init__(self, uow: UnitOfWork) -> None:
         self.uow = uow
 
+    def get_list(self, list_id: int) -> TodoListModel:
+        return (
+            self.uow.session.query(TodoListModel).add_entity(TodoItemModel).filter(TodoListModel.id == list_id).first()
+        )
+
     def upsert_list(self, todo_list: TodoListModel) -> TodoListModel:
         if todo_list.id:
             audit = AuditModel(operation="update", message=f"Updating list {todo_list.id}")
@@ -21,10 +26,10 @@ class TodoRepository:
 
     def upsert_item(self, todo_item: TodoItemModel) -> TodoItemModel:
         if todo_item.id:
-            audit = AuditModel(operation="update", message=f"Updating item {todo_item.id}")
+            audit = AuditModel(operation="update", message=f"Updating {todo_item.id}")
         else:
             audit = AuditModel(
-                operation="insert", message=f"Adding new item '{todo_item.name}' to list {todo_item.list_id}"
+                operation="insert", message=f"Adding new item '{todo_item.description}' to list {todo_item.list_id}"
             )
 
         self.uow.session.add(audit)

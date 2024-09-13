@@ -61,7 +61,7 @@ class TodoItemModel(BaseModel):
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, index=True)
     description: Mapped[str] = mapped_column(String(200))
-    status: Mapped[int] = mapped_column()
+    status: Mapped[int] = mapped_column(Enum(TodoStatus), default=TodoStatus.PENDING)
 
     list_id: Mapped[int] = mapped_column(ForeignKey("todo_list.id"))
     list: Mapped[TodoListModel] = relationship()

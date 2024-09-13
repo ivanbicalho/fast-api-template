@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from repository.user_repository import UserRepository
-from api.schemas.users_schema import UserRequest, UserResponse
+from api.schemas.v1.users_schema import UserRequest, UserResponse
 import logging
 import api.ioc as ioc
 from use_cases.add_user_use_case import AddUserUseCase
 
-router = APIRouter(prefix="/users", tags=["Users"])
+router = APIRouter(prefix="/v1/users", tags=["Users"])
 logger = logging.getLogger(__name__)
 
 

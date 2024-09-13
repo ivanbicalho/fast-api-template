@@ -5,15 +5,19 @@ from use_cases.add_user_use_case import AddUserUseCaseRequest
 
 
 class UserRequest(BaseModel):
-    first_name: str
-    last_name: str
+    name: str
     email: str
     default_list_name: str
 
     def to_service_request(self) -> AddUserUseCaseRequest:
+        # We made it better in the /v2/users
+        name_parts = self.name.split(" ")
+        first_name = name_parts[0]
+        last_name = " ".join(name_parts[1:]) if len(name_parts) > 1 else ""
+
         return AddUserUseCaseRequest(
-            first_name=self.first_name,
-            last_name=self.last_name,
+            first_name=first_name,
+            last_name=last_name,
             email=self.email,
             default_list_name=self.default_list_name,
         )
@@ -21,8 +25,7 @@ class UserRequest(BaseModel):
     class Config:
         json_schema_extra = {
             "example": {
-                "first_name": "Ivan",
-                "last_name": "Bicalho",
+                "name": "Ivan Bicalho",
                 "email": "ivanribeirob@gmail.com",
                 "default_list_name": "My first list",
             }

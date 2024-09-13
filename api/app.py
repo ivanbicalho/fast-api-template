@@ -2,7 +2,9 @@ from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 import logging
 
-from api.routes import users_route
+from api.routes.v1 import users_route as users_route_v1
+from api.routes.v1 import todo_route as todo_route_v1
+from api.routes.v2 import users_route as users_route_v2
 
 logger = logging.getLogger(__name__)
 
@@ -38,4 +40,6 @@ async def custom_http_exception_handler(request, exc) -> JSONResponse:
 #     allow_headers=["*"],
 # )
 
-app.include_router(users_route.router)
+app.include_router(users_route_v1.router)
+app.include_router(todo_route_v1.router)
+app.include_router(users_route_v2.router)
