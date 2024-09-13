@@ -1,7 +1,7 @@
 from __future__ import annotations
 from pydantic import BaseModel
-from db.models import UserModel
-from commands.add_user_command import AddUserUseCaseRequest
+from db.models import User
+from commands.add_user_command import AddUserCommandRequest
 
 
 class UserRequest(BaseModel):
@@ -9,13 +9,13 @@ class UserRequest(BaseModel):
     email: str
     default_list_name: str
 
-    def to_service_request(self) -> AddUserUseCaseRequest:
+    def to_command_request(self) -> AddUserCommandRequest:
         # We made it better in the /v2/users
         name_parts = self.name.split(" ")
         first_name = name_parts[0]
         last_name = " ".join(name_parts[1:]) if len(name_parts) > 1 else ""
 
-        return AddUserUseCaseRequest(
+        return AddUserCommandRequest(
             first_name=first_name,
             last_name=last_name,
             email=self.email,
@@ -39,7 +39,7 @@ class UserResponse(BaseModel):
     email: str
 
     @staticmethod
-    def from_user(user: UserModel) -> UserResponse:
+    def from_user(user: User) -> UserResponse:
         return UserResponse(
             id=user.id,
             first_name=user.first_name,

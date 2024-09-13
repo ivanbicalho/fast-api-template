@@ -1,13 +1,13 @@
 from dataclasses import dataclass
 from db.enum import AuditOperation
-from db.models import TodoListModel, UserModel
+from db.models import TodoList, User
 from repository.audit_repository import AuditRepository
 from repository.todo_repository import TodoRepository
 from repository.user_repository import UserRepository
 
 
 @dataclass
-class AddUserUseCaseRequest:
+class AddUserCommandRequest:
     first_name: str
     last_name: str
     email: str
@@ -25,12 +25,17 @@ class AddUserCommand:
         self.todo_repository = todo_repository
         self.audit_repository = audit_repository
 
-    def run(self, request: AddUserUseCaseRequest) -> UserModel:
+    def run(self, request: AddUserCommandRequest) -> User:
         user = self.user_repository.upsert(
-            UserModel(first_name=request.first_name, last_name=request.last_name, email=request.email)
+            User(first_name=request.first_name, last_name=request.last_name, email=request.email)
         )
-        self.todo_repository.upsert_list(TodoListModel(name=request.default_list_name, user_id=user.id))
         self.audit_repository.audit(
-            AuditOperation.INSERT, f"Adding new user {user.first_name} {user.last_name} <{user.email}>"
+            operation=AuditOperation.INSERT,
+            user_id=user.id,
+            message=f"Adding new user {user.first_name} {user.last_name} <{user.email}>",
+        )
+        todo_list = self.todo_repository.upsert_list(TodoList(name=request.default_list_name, user_id=user.id))
+        self.audit_repository.audit(
+            operation=AuditOperation.INSERT, user_id=user.id, message=f"Adding new list '{todo_list.name}'"
         )
         return user

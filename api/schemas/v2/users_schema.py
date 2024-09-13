@@ -1,7 +1,7 @@
 from __future__ import annotations
 from pydantic import BaseModel
-from db.models import UserModel
-from commands.add_user_command import AddUserUseCaseRequest
+from db.models import User
+from commands.add_user_command import AddUserCommandRequest
 
 
 class UserRequest(BaseModel):
@@ -10,8 +10,8 @@ class UserRequest(BaseModel):
     email: str
     default_list_name: str
 
-    def to_service_request(self) -> AddUserUseCaseRequest:
-        return AddUserUseCaseRequest(
+    def to_service_request(self) -> AddUserCommandRequest:
+        return AddUserCommandRequest(
             first_name=self.first_name,
             last_name=self.last_name,
             email=self.email,

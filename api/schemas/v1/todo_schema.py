@@ -1,7 +1,7 @@
 from __future__ import annotations
 import datetime
 from pydantic import BaseModel
-from db.models import TodoItemModel, TodoListModel, TodoStatus
+from db.models import TodoItem, TodoList, TodoStatus
 
 
 class TodoListRequest(BaseModel):
@@ -16,8 +16,8 @@ class TodoListRequest(BaseModel):
             }
         }
 
-    def to_todo_list(self) -> TodoListModel:
-        return TodoListModel(name=self.name, user_id=self.user_id)
+    def to_todo_list(self) -> TodoList:
+        return TodoList(name=self.name, user_id=self.user_id)
 
 
 class TodoListResponse(BaseModel):
@@ -29,7 +29,7 @@ class TodoListResponse(BaseModel):
     items: list[TodoItemResponse]
 
     @staticmethod
-    def from_todo_list(todo_list: TodoListModel) -> TodoListResponse:
+    def from_todo_list(todo_list: TodoList) -> TodoListResponse:
         return TodoListResponse(
             id=todo_list.id,
             name=todo_list.name,
@@ -50,8 +50,8 @@ class TodoItemRequest(BaseModel):
             }
         }
 
-    def to_todo_item(self, list_id: int) -> TodoItemModel:
-        return TodoItemModel(description=self.description, list_id=list_id)
+    def to_todo_item(self, list_id: int) -> TodoItem:
+        return TodoItem(description=self.description, list_id=list_id)
 
 
 class TodoItemResponse(BaseModel):
@@ -62,7 +62,7 @@ class TodoItemResponse(BaseModel):
     updated: datetime.datetime
 
     @staticmethod
-    def from_todo_item(todo_item: TodoItemModel) -> TodoItemResponse:
+    def from_todo_item(todo_item: TodoItem) -> TodoItemResponse:
         return TodoItemResponse(
             id=todo_item.id,
             description=todo_item.description,

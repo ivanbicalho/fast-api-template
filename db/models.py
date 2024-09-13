@@ -15,13 +15,13 @@ def default_updated(context) -> Any:
     return context.get_current_parameters()["created"]
 
 
-class BaseModel(Base):
+class EditableModel(Base):
     __abstract__ = True
     created: Mapped[datetime.datetime] = mapped_column(default=datetime.datetime.now)
     updated: Mapped[datetime.datetime] = mapped_column(default=default_updated, onupdate=datetime.datetime.now)
 
 
-class UserModel(BaseModel):
+class User(EditableModel):
     __tablename__ = "user"
     __table_args__ = {"extend_existing": True}
 
@@ -34,7 +34,7 @@ class UserModel(BaseModel):
     email: Mapped[str] = mapped_column(String(200))
 
 
-class TodoListModel(BaseModel):
+class TodoList(EditableModel):
     __tablename__ = "todo_list"
     __table_args__ = {"extend_existing": True}
 
@@ -48,11 +48,11 @@ class TodoListModel(BaseModel):
     #     Enum(TodoStatus, native_enum=False, values_callable=lambda e: [x.value for x in e]),
     # )
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
-    user: Mapped[UserModel] = relationship()
-    items: Mapped[list[TodoItemModel]] = relationship(back_populates="list")
+    user: Mapped[User] = relationship()
+    items: Mapped[list[TodoItem]] = relationship(back_populates="list")
 
 
-class TodoItemModel(BaseModel):
+class TodoItem(EditableModel):
     __tablename__ = "todo_item"
     __table_args__ = {"extend_existing": True}
 
@@ -64,10 +64,10 @@ class TodoItemModel(BaseModel):
     status: Mapped[TodoStatus] = mapped_column(Enum(TodoStatus), default=TodoStatus.PENDING)
 
     list_id: Mapped[int] = mapped_column(ForeignKey("todo_list.id"))
-    list: Mapped[TodoListModel] = relationship()
+    list: Mapped[TodoList] = relationship()
 
 
-class AuditModel(Base):
+class Audit(Base):
     __tablename__ = "auditing"
     __table_args__ = {"extend_existing": True}
 
@@ -78,3 +78,6 @@ class AuditModel(Base):
     created: Mapped[datetime.datetime] = mapped_column(default=datetime.datetime.now, index=True)
     operation: Mapped[AuditOperation] = mapped_column(Enum(AuditOperation))
     message: Mapped[str] = mapped_column(String(500))
+
+    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
+    user: Mapped[User] = relationship()
