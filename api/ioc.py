@@ -1,6 +1,14 @@
+"""
+This is exclusive for FastAPI
+
+FastAPI handles dependencies in a very nice way, and we can use it to create a simple IoC container
+This module is responsible for creating the dependencies that will be used in the routes
+"""
+
 from __future__ import annotations
 from typing import Any, Generator
 from fastapi import Depends
+from repository.audit_repository import AuditRepository
 from repository.todo_repository import TodoRepository
 from repository.user_repository import UserRepository
 from db.uow import UnitOfWork
@@ -25,8 +33,13 @@ def todo_repository(uow: UnitOfWork = Depends(uow)) -> TodoRepository:
     return TodoRepository(uow)
 
 
+def audit_repository(uow: UnitOfWork = Depends(uow)) -> AuditRepository:
+    return AuditRepository(uow)
+
+
 def add_user_use_case(
     user_repository: UserRepository = Depends(user_repository),
     todo_repository: TodoRepository = Depends(todo_repository),
+    audit_repository: AuditRepository = Depends(audit_repository),
 ) -> AddUserCommand:
-    return AddUserCommand(user_repository, todo_repository)
+    return AddUserCommand(user_repository, todo_repository, audit_repository)

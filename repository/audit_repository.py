@@ -1,4 +1,3 @@
-from enum import Enum
 from db.enum import AuditOperation
 from db.models import Audit
 from db.uow import UnitOfWork

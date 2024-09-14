@@ -11,6 +11,9 @@ class CompleteTodoItemCommand:
     def run(self, todo_item_id: int) -> None:
         todo_list = self.todo_repository.get_list_from_item(todo_item_id)
 
+        if not todo_list:
+            raise ValueError(f"Item id {todo_item_id} not found")
+
         todo_item = next(i for i in todo_list.items if i.id == todo_item_id)
         todo_item.status = TodoStatus.COMPLETED
         self.audit_repository.audit(

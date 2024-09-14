@@ -8,18 +8,28 @@ from api.routes.v2 import users_route as users_route_v2
 
 logger = logging.getLogger(__name__)
 
-# Multiple versions: https://github.com/tiangolo/fastapi/issues/381#issuecomment-584132553
+# There are a couple os ways to version API's in Fast API.
+# A FastAPI app can have only one Swagger UI and in this repo we will use it this way
+# If you want to have multiple docs like:
+# By version:
+#   - /v1/docs
+#   - /v2/docs
+# By resource:
+#   /users/docs
+#   /todo/docs
+# You can have multiple FastAPI instances and use app.mount to add them to the a main app
+# You can find more info here: https://github.com/tiangolo/fastapi/issues/381#issuecomment-584132553
 
 app = FastAPI(
     title="Architectural API in Python",
     description="Architectural API in Python",
     terms_of_service="",
     contact={
-        "Developer name": "Ivan Bicalho",
+        "name": "Ivan Bicalho",
         "email": "ivanribeirob@gmail.com",
-        "Website Address": "https://www.ivanbicalho.com",
+        "url": "https://github.com/ivanbicalho/fast-api-template",
     },
-    version="0.0.1",
+    version="1.0.0",
     docs_url="/docs",
     redoc_url=None,
 )
@@ -32,6 +42,7 @@ async def custom_http_exception_handler(request, exc) -> JSONResponse:
     return JSONResponse({"detail": "Internal server error"}, headers=headers)
 
 
+# CORS example:
 # app.add_middleware(
 #     CORSMiddleware,
 #     allow_origins=["http://localhost:8080"],

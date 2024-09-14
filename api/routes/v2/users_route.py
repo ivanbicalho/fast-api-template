@@ -1,5 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
-from repository.user_repository import UserRepository
+from fastapi import APIRouter, Depends, status
 from api.schemas.v1.users_schema import UserResponse
 from api.schemas.v2.users_schema import UserRequest
 import logging

@@ -1,10 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from repository.todo_repository import TodoRepository
-from repository.user_repository import UserRepository
 from api.schemas.v1.todo_schema import TodoListRequest, TodoListResponse, TodoItemRequest, TodoItemResponse
 import logging
 import api.ioc as ioc
-from commands.add_user_command import AddUserCommand
 
 router = APIRouter(prefix="/v1/todo", tags=["ToDo"])
 logger = logging.getLogger(__name__)
@@ -38,4 +36,4 @@ def get_todo_list(
     if not todo_list:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "List not found")
 
-    return [TodoListResponse.from_todo_list(todo_list)]
+    return TodoListResponse.from_todo_list(todo_list)

@@ -1,6 +1,5 @@
 from __future__ import annotations
 from pydantic import BaseModel
-from db.models import User
 from commands.add_user_command import AddUserCommandRequest
 
 
