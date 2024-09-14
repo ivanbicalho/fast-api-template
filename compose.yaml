@@ -20,27 +20,5 @@ services:
     env_file:
       - local.env
 
-  # make-migrations:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile
-  #   env_file:
-  #     - local.env
-  #   command: sh -c "
-  #     export PYTHONPATH=$(pwd) && \
-  #     cd /app/db && \
-  #     alembic revision --autogenerate"
-
-  # migrate:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile
-  #   env_file:
-  #     - local.env
-  #   command: sh -c "
-  #     export PYTHONPATH=$(pwd) && \
-  #     cd /app/db && \
-  #     alembic upgrade head"
-
 volumes:
   arch-db-data:
