@@ -29,6 +29,7 @@ class CompleteTodoItemCommand:
             raise TodoItemNotFound(request.item_id)
 
         if todo_item.status == TodoStatus.COMPLETED:
+            # return the item if it's already completed
             return todo_item
 
         todo_item.status = TodoStatus.COMPLETED

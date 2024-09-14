@@ -34,11 +34,12 @@ app = FastAPI(
 )
 
 
+# Handle all unhandled exceptions here and return HTTP 500
 @app.exception_handler(Exception)
 async def custom_http_exception_handler(request, exc) -> JSONResponse:
     logger.exception("Unhandled error", exc_info=exc)
     headers = getattr(exc, "headers", None)
-    return JSONResponse({"detail": "Internal server error"}, headers=headers)
+    return JSONResponse({"detail": "Internal server error"}, status_code=500, headers=headers)
 
 
 # CORS example:

@@ -55,7 +55,7 @@ def get_todo_list(
     if not todo_list:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "List not found")
 
-    # We return HTTP object responses, so we convert the model to an appropriate response
+    # Convert the model to an appropriate response
     return TodoListResponse.from_todo_list(todo_list)
 
 
@@ -69,8 +69,8 @@ def complete_todo_item(
         # The command contains all the logic to complete a todo item
         todo_item = complete_todo_item_command.run(CompleteTodoItemCommandRequest(list_id=id, item_id=item_id))
 
-        # We return HTTP object responses, so we convert the model to an appropriate response
+        # Convert the model to an appropriate response
         return TodoItemResponse.from_todo_item(todo_item)
     except (TodoListNotFound, TodoItemNotFound):
-        # The command can raises 2 different exceptions so we should handle them here
+        # The command can raise 2 different exceptions so we should handle them here
         raise HTTPException(status.HTTP_400_BAD_REQUEST, "List or Item not Found")

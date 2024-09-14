@@ -11,7 +11,7 @@ from db.enum import TodoStatus, AuditOperation
 
 def default_updated(context) -> Any:
     # updated and created should be exactly the same when inserting a new record
-    # so it returns the created date to be used as a default value for updated date
+    # so it returns the created date to be used as a default value for the updated date
     return context.get_current_parameters()["created"]
 
 
@@ -44,9 +44,6 @@ class TodoList(EditableModel):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, index=True)
     name: Mapped[str] = mapped_column(String(200))
     status: Mapped[TodoStatus] = mapped_column(Enum(TodoStatus), default=TodoStatus.PENDING)
-    # status: Mapped[TodoStatus] = mapped_column(
-    #     Enum(TodoStatus, native_enum=False, values_callable=lambda e: [x.value for x in e]),
-    # )
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
     user: Mapped[User] = relationship()
     items: Mapped[list[TodoItem]] = relationship(back_populates="list")

@@ -1,10 +1,3 @@
-"""
-This is exclusive for FastAPI
-
-FastAPI handles dependencies in a very nice way, and we can use it to create a simple IoC container
-This module is responsible for creating the dependencies that will be used in the routes
-"""
-
 from __future__ import annotations
 from typing import Any, Generator
 from fastapi import Depends
@@ -16,6 +9,12 @@ from repository.todo_repository import TodoRepository
 from repository.user_repository import UserRepository
 from db.uow import UnitOfWork
 from commands.add_user_command import AddUserCommand
+
+
+# This is exclusive for FastAPI
+# -----------------------------
+# FastAPI handles dependencies in a very nice way, and we can use it to create a simple IoC container
+# This module is responsible for creating the dependencies that will be used in the routes
 
 
 def uow() -> Generator[UnitOfWork, Any, None]:

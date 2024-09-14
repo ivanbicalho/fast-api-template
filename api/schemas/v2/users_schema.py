@@ -9,7 +9,9 @@ class UserRequest(BaseModel):
     email: str
     default_list_name: str
 
-    def to_service_request(self) -> AddUserCommandRequest:
+    # Mapper to convert the request to a command request
+    # We could have a specific adapter class to do this, but this is simpler and effective
+    def to_command_request(self) -> AddUserCommandRequest:
         return AddUserCommandRequest(
             first_name=self.first_name,
             last_name=self.last_name,
@@ -17,6 +19,7 @@ class UserRequest(BaseModel):
             default_list_name=self.default_list_name,
         )
 
+    # Swagger UI example
     class Config:
         json_schema_extra = {
             "example": {
