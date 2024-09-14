@@ -1,3 +1,4 @@
+from commands.exceptions import TodoItemNotFound
 from db.enum import AuditOperation, TodoStatus
 from repository.audit_repository import AuditRepository
 from repository.todo_repository import TodoRepository
@@ -12,7 +13,7 @@ class CompleteTodoItemCommand:
         todo_list = self.todo_repository.get_list_from_item(todo_item_id)
 
         if not todo_list:
-            raise ValueError(f"Item id {todo_item_id} not found")
+            raise TodoItemNotFound(todo_item_id)
 
         todo_item = next(i for i in todo_list.items if i.id == todo_item_id)
         todo_item.status = TodoStatus.COMPLETED

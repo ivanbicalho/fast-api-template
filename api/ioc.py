@@ -8,6 +8,8 @@ This module is responsible for creating the dependencies that will be used in th
 from __future__ import annotations
 from typing import Any, Generator
 from fastapi import Depends
+from commands.add_todo_item_command import AddTodoItemCommand
+from commands.add_todo_list_command import AddTodoListCommand
 from repository.audit_repository import AuditRepository
 from repository.todo_repository import TodoRepository
 from repository.user_repository import UserRepository
@@ -37,9 +39,24 @@ def audit_repository(uow: UnitOfWork = Depends(uow)) -> AuditRepository:
     return AuditRepository(uow)
 
 
-def add_user_use_case(
+def add_user_command(
     user_repository: UserRepository = Depends(user_repository),
     todo_repository: TodoRepository = Depends(todo_repository),
     audit_repository: AuditRepository = Depends(audit_repository),
 ) -> AddUserCommand:
     return AddUserCommand(user_repository, todo_repository, audit_repository)
+
+
+def add_list_command(
+    user_repository: UserRepository = Depends(user_repository),
+    todo_repository: TodoRepository = Depends(todo_repository),
+    audit_repository: AuditRepository = Depends(audit_repository),
+) -> AddTodoListCommand:
+    return AddTodoListCommand(user_repository, todo_repository, audit_repository)
+
+
+def add_item_command(
+    todo_repository: TodoRepository = Depends(todo_repository),
+    audit_repository: AuditRepository = Depends(audit_repository),
+) -> AddTodoListCommand:
+    return AddTodoItemCommand(todo_repository, audit_repository)

@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 @router.post("", status_code=status.HTTP_200_OK, response_model=UserResponse)
 def add_user(
     request: UserRequest,
-    add_user_use_case: AddUserCommand = Depends(ioc.add_user_use_case),
+    add_user_use_case: AddUserCommand = Depends(ioc.add_user_command),
 ) -> UserResponse:
     user = add_user_use_case.run(request.to_service_request())
     return UserResponse.from_user(user)

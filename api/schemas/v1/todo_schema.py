@@ -1,23 +1,25 @@
 from __future__ import annotations
 import datetime
 from pydantic import BaseModel
+from commands.add_todo_item_command import AddTodoItemCommandRequest
+from commands.add_todo_list_command import AddTodoListCommandRequest
 from db.models import TodoItem, TodoList, TodoStatus
 
 
 class TodoListRequest(BaseModel):
     user_id: int
-    name: str
+    list_name: str
 
     class Config:
         json_schema_extra = {
             "example": {
                 "user_id": 1,
-                "name": "My List",
+                "list_name": "My List",
             }
         }
 
-    def to_todo_list(self) -> TodoList:
-        return TodoList(name=self.name, user_id=self.user_id)
+    def to_command_request(self) -> AddTodoListCommandRequest:
+        return AddTodoListCommandRequest(user_id=self.user_id, list_name=self.list_name)
 
 
 class TodoListResponse(BaseModel):
@@ -50,8 +52,8 @@ class TodoItemRequest(BaseModel):
             }
         }
 
-    def to_todo_item(self, list_id: int) -> TodoItem:
-        return TodoItem(description=self.description, list_id=list_id)
+    def to_command_request(self, list_id: int) -> AddTodoItemCommandRequest:
+        return AddTodoItemCommandRequest(list_id=list_id, description=self.description)
 
 
 class TodoItemResponse(BaseModel):
