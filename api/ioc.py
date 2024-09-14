@@ -58,5 +58,5 @@ def add_list_command(
 def add_item_command(
     todo_repository: TodoRepository = Depends(todo_repository),
     audit_repository: AuditRepository = Depends(audit_repository),
-) -> AddTodoListCommand:
+) -> AddTodoItemCommand:
     return AddTodoItemCommand(todo_repository, audit_repository)

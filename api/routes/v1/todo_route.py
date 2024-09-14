@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from commands.add_todo_item_command import AddTodoItemCommand
 from commands.add_todo_list_command import AddTodoListCommand
-from commands.exceptions import TodoItemNotFound, TodoListNotFound, UserNotFound
+from commands.exceptions import TodoItemNotFound, UserNotFound
 from repository.todo_repository import TodoRepository
 from api.schemas.v1.todo_schema import TodoListRequest, TodoListResponse, TodoItemRequest, TodoItemResponse
 import logging

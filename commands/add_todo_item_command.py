@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from commands.exceptions import TodoListNotFound
 from db.enum import AuditOperation
-from db.models import TodoItem, TodoList
+from db.models import TodoItem
 from repository.audit_repository import AuditRepository
 from repository.todo_repository import TodoRepository
 
