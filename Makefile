@@ -20,7 +20,6 @@ lint:
 requirements_files:= $(shell find requirements -type f)
 update-requirements:
 	@for file in $(requirements_files); do \
-		echo "Analizing $$file"; \
 		pur -r $$file; \
 	done
 
@@ -49,15 +48,3 @@ migrate:
 	export PYTHONPATH=$(shell pwd) && \
 	cd ./db && \
 	alembic upgrade head
-
-# migrations:
-# 	@set -a && \
-# 	source local.env && \
-# 	set +a && \
-# 	export PYTHONPATH=$(shell pwd) && \
-# 	cd ./db && \
-# 	alembic revision --autogenerate
-
-# migrate:
-# 	@docker compose run --build migrate
-
