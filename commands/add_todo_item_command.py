@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from commands.exceptions import TodoListNotFound
-from db.enum import AuditOperation
+from db.enum import AuditOperation, TodoStatus
 from db.models import TodoItem
 from repository.audit_repository import AuditRepository
 from repository.todo_repository import TodoRepository
@@ -33,4 +33,15 @@ class AddTodoItemCommand:
             user_id=todo_list.user_id,
             message=f"Adding new item '{request.description}' to the list '{todo_list.name}'",
         )
+
+        # if the list is completed when adding a new item, we should set it to pending
+        if todo_list.status == TodoStatus.COMPLETED:
+            todo_list.status = TodoStatus.PENDING
+            self.todo_repository.upsert_list(todo_list)
+            self.audit_repository.audit(
+                operation=AuditOperation.UPDATE,
+                user_id=todo_list.user_id,
+                message=f"List '{todo_list.name}' set to pending",
+            )
+
         return todo_item

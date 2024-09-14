@@ -7,10 +7,7 @@ class TodoRepository:
         self._uow = uow
 
     def get_list(self, list_id: int) -> TodoList | None:
-        return self._uow.session.query(TodoList).join(TodoItem, TodoList.items).filter(TodoList.id == list_id).first()
-
-    def get_list_from_item(self, item_id: int) -> TodoList | None:
-        return self._uow.session.query(TodoList).join(TodoItem, TodoList.items).filter(TodoItem.id == item_id).first()
+        return self._uow.session.query(TodoList).join(TodoItem, isouter=True).filter(TodoList.id == list_id).first()
 
     def upsert_list(self, todo_list: TodoList) -> TodoList:
         self._uow.session.add(todo_list)

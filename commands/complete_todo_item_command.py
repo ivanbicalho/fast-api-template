@@ -1,7 +1,15 @@
-from commands.exceptions import TodoItemNotFound
+from dataclasses import dataclass
+from commands.exceptions import TodoItemNotFound, TodoListNotFound
 from db.enum import AuditOperation, TodoStatus
+from db.models import TodoItem
 from repository.audit_repository import AuditRepository
 from repository.todo_repository import TodoRepository
+
+
+@dataclass
+class CompleteTodoItemCommandRequest:
+    list_id: int
+    item_id: int
 
 
 class CompleteTodoItemCommand:
@@ -9,13 +17,20 @@ class CompleteTodoItemCommand:
         self.todo_repository = todo_repository
         self.audit_repository = audit_repository
 
-    def run(self, todo_item_id: int) -> None:
-        todo_list = self.todo_repository.get_list_from_item(todo_item_id)
+    def run(self, request: CompleteTodoItemCommandRequest) -> TodoItem:
+        todo_list = self.todo_repository.get_list(request.list_id)
 
         if not todo_list:
-            raise TodoItemNotFound(todo_item_id)
+            raise TodoListNotFound(request.list_id)
 
-        todo_item = next(i for i in todo_list.items if i.id == todo_item_id)
+        try:
+            todo_item = next(i for i in todo_list.items if i.id == request.item_id)
+        except StopIteration:
+            raise TodoItemNotFound(request.item_id)
+
+        if todo_item.status == TodoStatus.COMPLETED:
+            return todo_item
+
         todo_item.status = TodoStatus.COMPLETED
         self.audit_repository.audit(
             AuditOperation.UPDATE,
@@ -30,4 +45,5 @@ class CompleteTodoItemCommand:
                 AuditOperation.UPDATE, todo_list.user_id, f"List '{todo_list.name}' set as completed"
             )
 
-        self.todo_repository.upsert_list(todo_list)
+        self.todo_repository.upsert_list(todo_list)  # updates list and items
+        return todo_item
