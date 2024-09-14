@@ -18,9 +18,13 @@ def add_todo_list(
     add_todo_list_command: AddTodoListCommand = Depends(ioc.add_todo_list_command),
 ) -> TodoListResponse:
     try:
+        # The command contains all the logic to add a new list
         todo_list = add_todo_list_command.run(request.to_command_request())
+
+        # We return HTTP object responses, so we convert the model to an appropriate response
         return TodoListResponse.from_todo_list(todo_list)
     except UserNotFound:
+        # The command can raise an exception so we should handle them here
         raise HTTPException(status.HTTP_400_BAD_REQUEST, "User not found")
 
 
@@ -31,9 +35,13 @@ def add_todo_item(
     add_todo_item_command: AddTodoItemCommand = Depends(ioc.add_todo_item_command),
 ) -> TodoItemResponse:
     try:
+        # The command contains all the logic to add a new item to a list
         todo_item = add_todo_item_command.run(request.to_command_request(list_id=id))
+
+        # We return HTTP object responses, so we convert the model to an appropriate response
         return TodoItemResponse.from_todo_item(todo_item)
     except TodoListNotFound:
+        # The command can raise an exception so we should handle them here
         raise HTTPException(status.HTTP_400_BAD_REQUEST, "List not Found")
 
 
@@ -42,10 +50,12 @@ def get_todo_list(
     id: int,
     todo_repository: TodoRepository = Depends(ioc.todo_repository),
 ) -> TodoListResponse:
+    # GET operation: Use repository directly to avoid over engineering
     todo_list = todo_repository.get_list(id)
     if not todo_list:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "List not found")
 
+    # We return HTTP object responses, so we convert the model to an appropriate response
     return TodoListResponse.from_todo_list(todo_list)
 
 
@@ -56,8 +66,11 @@ def complete_todo_item(
     complete_todo_item_command: CompleteTodoItemCommand = Depends(ioc.complete_todo_item_command),
 ) -> TodoItemResponse:
     try:
+        # The command contains all the logic to complete a todo item
         todo_item = complete_todo_item_command.run(CompleteTodoItemCommandRequest(list_id=id, item_id=item_id))
-    except (TodoListNotFound, TodoItemNotFound):
-        raise HTTPException(status.HTTP_400_BAD_REQUEST, "List or Item not Found")
 
-    return TodoItemResponse.from_todo_item(todo_item)
+        # We return HTTP object responses, so we convert the model to an appropriate response
+        return TodoItemResponse.from_todo_item(todo_item)
+    except (TodoListNotFound, TodoItemNotFound):
+        # The command can raises 2 different exceptions so we should handle them here
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, "List or Item not Found")

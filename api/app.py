@@ -21,9 +21,8 @@ logger = logging.getLogger(__name__)
 # You can find more info here: https://github.com/tiangolo/fastapi/issues/381#issuecomment-584132553
 
 app = FastAPI(
-    title="Architectural API in Python",
-    description="Architectural API in Python",
-    terms_of_service="",
+    title="Python Architecture",
+    description="Python Architecture",
     contact={
         "name": "Ivan Bicalho",
         "email": "ivanribeirob@gmail.com",
