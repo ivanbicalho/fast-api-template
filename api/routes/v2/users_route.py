@@ -14,5 +14,5 @@ def add_user(
     request: UserRequest,
     add_user_use_case: AddUserCommand = Depends(ioc.add_user_command),
 ) -> UserResponse:
-    user = add_user_use_case.run(request.to_service_request())
+    user = add_user_use_case.run(request.to_command_request())
     return UserResponse.from_user(user)

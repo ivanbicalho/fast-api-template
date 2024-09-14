@@ -52,5 +52,5 @@ async def custom_http_exception_handler(request, exc) -> JSONResponse:
 # )
 
 app.include_router(users_route_v1.router)
-app.include_router(todo_route_v1.router)
 app.include_router(users_route_v2.router)
+app.include_router(todo_route_v1.router)
